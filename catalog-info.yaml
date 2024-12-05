@@ -1,0 +1,13 @@
+  apiVersion: backstage.io/v1alpha1
+  kind: Component
+  metadata:
+    name: llama_index
+    description: Github repository for llama_index
+    annotations:
+      google.com/cloudbuild-project-slug: ao-docs-tools
+      github.com/project-slug: AODocs-Dev/llama_index
+      sonarqube.org/project-key: AODocs-Dev_llama_index
+  spec:
+    type: service
+    lifecycle: production
+    owner: group:default/sre
