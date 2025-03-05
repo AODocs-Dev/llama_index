@@ -534,15 +534,17 @@ class Workflow(metaclass=WorkflowMeta):
 
                 if exception_raised:
                     # cancel the stream
-                    ctx.write_event_to_stream(StopEvent())
+                    ctx.write_event_to_stream(StopEvent(result=exception_raised))
 
                     raise exception_raised
 
                 if not we_done:
                     # cancel the stream
-                    ctx.write_event_to_stream(StopEvent())
-
                     msg = f"Operation timed out after {self._timeout} seconds"
+                    ctx.write_event_to_stream(
+                        StopEvent(result=WorkflowTimeoutError(msg))
+                    )
+
                     raise WorkflowTimeoutError(msg)
 
                 result.set_result(ctx._retval)
