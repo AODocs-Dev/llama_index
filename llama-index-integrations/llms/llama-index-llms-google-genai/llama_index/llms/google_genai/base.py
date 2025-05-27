@@ -149,7 +149,6 @@ class GoogleGenAI(FunctionCallingLLM):
     _max_tokens: int = PrivateAttr()
     _client: google.genai.Client = PrivateAttr()
     _generation_config: types.GenerateContentConfigDict = PrivateAttr()
-    _model_meta: types.Model = PrivateAttr()
 
     def __init__(
         self,
@@ -205,7 +204,6 @@ class GoogleGenAI(FunctionCallingLLM):
             config_params["debug_config"] = debug_config
 
         client = google.genai.Client(**config_params)
-        model_meta = client.models.get(model=model)
 
         super().__init__(
             model=model,
@@ -222,7 +220,6 @@ class GoogleGenAI(FunctionCallingLLM):
 
         self.model = model
         self._client = client
-        self._model_meta = model_meta
         # store this as a dict and not as a pydantic model so we can more easily
         # merge it later
         if generation_config:
@@ -250,9 +247,8 @@ class GoogleGenAI(FunctionCallingLLM):
             self._generation_config = types.GenerateContentConfig(
                 **config_kwargs
             ).model_dump()
-        self._max_tokens = (
-            max_tokens or model_meta.output_token_limit or DEFAULT_NUM_OUTPUTS
         )
+        self._max_tokens = max_tokens or DEFAULT_NUM_OUTPUTS
 
     @classmethod
     def class_name(cls) -> str:
@@ -261,7 +257,7 @@ class GoogleGenAI(FunctionCallingLLM):
     @property
     def metadata(self) -> LLMMetadata:
         if self.context_window is None:
-            base = self._model_meta.input_token_limit or 200000
+            base = 200000
             total_tokens = base + self._max_tokens
         else:
             total_tokens = self.context_window
