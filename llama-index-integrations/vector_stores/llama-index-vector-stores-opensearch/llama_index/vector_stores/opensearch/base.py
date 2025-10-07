@@ -652,9 +652,9 @@ class OpensearchVectorClient:
         if self.is_aoss:
             ef_enabled = False
         else:
-            self._os_version = self._get_opensearch_version()
-            major, minor, patch = self._os_version.split(".")
-            ef_enabled = int(major) >= 2 and int(minor) >= 9
+            # We use more recent versions than this so there is no need to check minor/patch versions
+            # in every single request
+            return True
         return ef_enabled
 
     def index_results(self, nodes: List[BaseNode], **kwargs: Any) -> List[str]:
