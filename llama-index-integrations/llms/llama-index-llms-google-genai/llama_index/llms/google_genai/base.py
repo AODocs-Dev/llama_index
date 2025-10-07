@@ -247,7 +247,7 @@ class GoogleGenAI(FunctionCallingLLM):
             self._generation_config = types.GenerateContentConfig(
                 **config_kwargs
             ).model_dump()
-        )
+
         self._max_tokens = max_tokens or DEFAULT_NUM_OUTPUTS
 
     @classmethod
