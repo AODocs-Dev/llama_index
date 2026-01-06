@@ -373,8 +373,10 @@ class OpensearchVectorClient:
                 }
             }
         elif op in [FilterOperator.IN, FilterOperator.ANY]:
-            if isinstance(filter.value, list) and all(
-                self._is_text_field(val) for val in filter.value
+            if (
+                isinstance(filter.value, list)
+                and all(self._is_text_field(val) for val in filter.value)
+                and ".keywords." not in key
             ):
                 return {"terms": {f"{key}.keyword": filter.value}}
             else:
